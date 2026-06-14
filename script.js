@@ -18,6 +18,11 @@ const state = {
   subSize: 3.2,
   subX: 4,
   subY: 89,
+  txtExtra: "",
+  extraColor: "#ffffff",
+  extraSize: 3.2,
+  extraX: 4,
+  extraY: 95,
 };
 
 const preview = document.getElementById("preview-canvas");
@@ -212,6 +217,21 @@ function draw(ctx, w, h) {
     (state.subY / 100) * h,
   );
   ctx.restore();
+
+  if (state.txtExtra) {
+    const efs = (state.extraSize / 100) * w;
+    ctx.save();
+    ctx.fillStyle = state.extraColor;
+    ctx.font = `700 ${efs}px 'Arial',sans-serif`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      state.txtExtra.toUpperCase(),
+      (state.extraX / 100) * w,
+      (state.extraY / 100) * h,
+    );
+    ctx.restore();
+  }
 }
 
 function render() {
@@ -240,8 +260,14 @@ function updateSelectionBoxes() {
   const selPerson = document.getElementById("sel-person");
   const selName = document.getElementById("sel-name");
   const selSub = document.getElementById("sel-sub");
+  const selExtra = document.getElementById("sel-extra");
 
-  const boxes = { person: selPerson, name: selName, sub: selSub };
+  const boxes = {
+    person: selPerson,
+    name: selName,
+    sub: selSub,
+    extra: selExtra,
+  };
 
   Object.entries(boxes).forEach(([key, el]) => {
     el.classList.remove("visible");
@@ -259,7 +285,7 @@ function updateSelectionBoxes() {
         W,
         H,
       );
-    else
+    else if (key === "sub")
       b = getTextBounds(
         state.txtSub,
         state.subX,
@@ -269,8 +295,19 @@ function updateSelectionBoxes() {
         W,
         H,
       );
+    else
+      b = getTextBounds(
+        state.txtExtra,
+        state.extraX,
+        state.extraY,
+        state.extraSize,
+        700,
+        W,
+        H,
+      );
 
     if (!b || (key === "person" && !state.personImg)) return;
+    if (key === "extra" && !state.txtExtra) return;
 
     const pad = key === "person" ? 4 : 6;
     el.style.left = ((b.x - pad) / W) * 100 + "%";
@@ -342,6 +379,26 @@ function hitTest(cx, cy) {
     hits.push({ type: "sub", area: subB.w * subB.h });
   }
 
+  if (state.txtExtra) {
+    const extraB = getTextBounds(
+      state.txtExtra,
+      state.extraX,
+      state.extraY,
+      state.extraSize,
+      700,
+      W,
+      H,
+    );
+    if (
+      cx >= extraB.x &&
+      cx <= extraB.x + extraB.w &&
+      cy >= extraB.y &&
+      cy <= extraB.y + extraB.h
+    ) {
+      hits.push({ type: "extra", area: extraB.w * extraB.h });
+    }
+  }
+
   if (!hits.length) return null;
   hits.sort((a, b) => a.area - b.area);
   return hits[0].type;
@@ -361,10 +418,14 @@ function syncControlValues() {
   sync("name-y", state.nameY);
   sync("sub-x", state.subX);
   sync("sub-y", state.subY);
+  sync("extra-x", state.extraX);
+  sync("extra-y", state.extraY);
   document.getElementById("name-size-val").textContent =
     state.nameSize.toFixed(1) + "%";
   document.getElementById("sub-size-val").textContent =
     state.subSize.toFixed(1) + "%";
+  document.getElementById("extra-size-val").textContent =
+    state.extraSize.toFixed(1) + "%";
 }
 
 function moveElement(type, dxPct, dyPct) {
@@ -377,6 +438,9 @@ function moveElement(type, dxPct, dyPct) {
   } else if (type === "sub") {
     state.subX = clamp(state.subX + dxPct, -100, 200);
     state.subY = clamp(state.subY + dyPct, -100, 200);
+  } else if (type === "extra") {
+    state.extraX = clamp(state.extraX + dxPct, -100, 200);
+    state.extraY = clamp(state.extraY + dyPct, -100, 200);
   }
   syncControlValues();
   render();
@@ -472,6 +536,7 @@ function onPointerDown(e) {
     if (elem === "person") startSize = state.personW;
     else if (elem === "name") startSize = state.nameSize;
     else if (elem === "sub") startSize = state.subSize;
+    else if (elem === "extra") startSize = state.extraSize;
     const touch = e.touches ? e.touches[0] : e;
     resizePointer = {
       element: elem,
@@ -539,6 +604,12 @@ function onPointerMove(e) {
       );
     } else if (resizePointer.element === "sub") {
       state.subSize = clamp(
+        resizePointer.startSize + (dx / rect.width) * 16,
+        0.5,
+        8,
+      );
+    } else if (resizePointer.element === "extra") {
+      state.extraSize = clamp(
         resizePointer.startSize + (dx / rect.width) * 16,
         0.5,
         8,
@@ -722,6 +793,11 @@ bindInput("sub-color", "subColor");
 bindSize("sub-size", "subSize", "sub-size-val");
 bindPos("sub-x", "subX");
 bindPos("sub-y", "subY");
+bindInput("txt-extra", "txtExtra");
+bindInput("extra-color", "extraColor");
+bindSize("extra-size", "extraSize", "extra-size-val");
+bindPos("extra-x", "extraX");
+bindPos("extra-y", "extraY");
 
 function doExport() {
   draw(ectx, W, H);
@@ -743,6 +819,12 @@ window.addEventListener("orientationchange", () => setTimeout(fitCanvas, 100));
 /* Inicialización — no depende de imports externos */
 render();
 loadDefaultBackground();
+
+/* Abrir sidebar en mobile por default */
+if (window.innerWidth <= 860) {
+  sidebar.classList.add("open");
+  backdrop.classList.add("visible");
+}
 requestAnimationFrame(() => {
   fitCanvas();
 });

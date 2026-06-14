@@ -489,6 +489,7 @@ input[type="color"]:hover {
     align-items: center;
     justify-content: center;
     gap: 6px;
+    width: 100%;
     padding: 9px 14px;
     border-radius: 10px;
     background: transparent;
@@ -656,6 +657,12 @@ input[type="color"]:hover {
 }
 .selection-box.sub {
     border-color: #ef476f;
+}
+.selection-box.extra {
+    border-color: #c084fc;
+}
+.selection-box.extra .resize-handle {
+    border: 2px solid #c084fc;
 }
 
 /* ── Resize handles ── */
@@ -883,7 +890,7 @@ input[type="color"]:hover {
         position: fixed;
         top: var(--header-h);
         right: 0;
-        bottom: 0;
+        bottom: 70px;
         width: min(100%, 360px);
         min-width: 0;
         transform: translateX(100%);
@@ -900,6 +907,19 @@ input[type="color"]:hover {
     }
     .desktop-only {
         display: none !important;
+    }
+    #sidebar-footer {
+        padding: 10px 10px calc(10px + var(--safe-bottom));
+        gap: 6px;
+    }
+    #btn-export {
+        font-size: 0.85rem;
+        padding: 12px 10px;
+        letter-spacing: 0.03em;
+    }
+    #btn-donate {
+        font-size: 0.75rem;
+        padding: 8px 10px;
     }
 }
 
