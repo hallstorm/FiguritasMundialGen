@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta name="theme-color" content="#070F1D" />
+        <title>Editor de Figuritas Mundial 2026</title>
+        <link rel="icon" type="image/png" href="favicon.png" />
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div id="app">
+            <header id="mobile-header" class="mobile-only">
+                <h1>⚽ Figurita Mundial 2026</h1>
+                <div class="header-actions">
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        id="btn-touch-mode"
+                        title="Modo mover con dedo"
+                        aria-label="Modo mover"
+                    >
+                        ✋
+                    </button>
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        id="btn-menu"
+                        title="Controles"
+                        aria-label="Abrir controles"
+                    >
+                        ☰
+                    </button>
+                </div>
+            </header>
+
+            <div id="main">
+                <aside id="sidebar">
+                    <div id="sidebar-header" class="desktop-only">
+                        <h1>
+                            <span class="eyebrow">⭐ Mundial 2026</span>
+                            Editor de Figuritas
+                        </h1>
+                    </div>
+
+                    <div id="sidebar-scroll">
+                        <!-- Modo táctil -->
+                        <div class="panel drag-mode-panel" id="drag-mode-panel">
+                            <div class="section-title">
+                                ✋ Mover con el dedo
+                            </div>
+                            <label class="checkbox-row">
+                                <input type="checkbox" id="touch-edit-toggle" />
+                                <span
+                                    >Activar modo edición táctil<br /><span
+                                        class="hint-text"
+                                        >Tocá la foto o el texto en la vista
+                                        previa para seleccionarlo y
+                                        arrastrarlo.</span
+                                    ></span
+                                >
+                            </label>
+                            <div class="drag-status" id="drag-status">
+                                Modo edición: desactivado
+                            </div>
+                        </div>
+
+                        <!-- FONDO -->
+                        <div class="panel collapsible" data-panel>
+                            <div class="panel-head">
+                                <div class="section-title">🖼 Fondo</div>
+                                <span class="chevron">▼</span>
+                            </div>
+                            <div class="panel-body">
+                                <p class="hint-text">
+                                    Por defecto se usa la plantilla Panini
+                                    Argentina. Podés cambiarla con tu propia
+                                    imagen.
+                                </p>
+                                <label class="upload-btn">
+                                    📂 Cambiar fondo
+                                    <input
+                                        type="file"
+                                        id="bg-upload"
+                                        accept="image/*"
+                                    />
+                                </label>
+                                <button
+                                    type="button"
+                                    class="btn-outline"
+                                    id="btn-reset-bg"
+                                >
+                                    ↩ Restaurar fondo predeterminado
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- FOTO PERSONA -->
+                        <div class="panel collapsible" data-panel>
+                            <div class="panel-head">
+                                <div class="section-title">
+                                    🧑 Foto de la persona
+                                </div>
+                                <span class="chevron">▼</span>
+                            </div>
+                            <div class="panel-body">
+                                <label class="upload-btn">
+                                    📷 Cargar foto
+                                    <input
+                                        type="file"
+                                        id="person-upload"
+                                        accept="image/*"
+                                    />
+                                </label>
+                                <label class="checkbox-row">
+                                    <input
+                                        type="checkbox"
+                                        id="remove-bg-check"
+                                        checked
+                                    />
+                                    <span
+                                        >Quitar fondo automáticamente<br /><span
+                                            class="hint-text"
+                                            >Usa IA en el navegador (sin subir a
+                                            servidores). La primera vez descarga
+                                            ~40 MB.</span
+                                        ></span
+                                    >
+                                </label>
+                                <div class="field-group">
+                                    <span>Posición X (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="person-x"
+                                            min="-100"
+                                            max="100"
+                                            value="14"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="person-x-num"
+                                            value="14"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Posición Y (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="person-y"
+                                            min="-100"
+                                            max="100"
+                                            value="7"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="person-y-num"
+                                            value="7"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Ancho (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="person-w"
+                                            min="1"
+                                            max="100"
+                                            value="67"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="person-w-num"
+                                            value="67"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEXTO NOMBRE -->
+                        <div class="panel collapsible" data-panel>
+                            <div class="panel-head">
+                                <div class="section-title">
+                                    ✏️ Texto principal (nombre)
+                                </div>
+                                <span class="chevron">▼</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="field-group">
+                                    <span>Texto</span>
+                                    <input
+                                        type="text"
+                                        id="txt-name"
+                                        value="DANTE"
+                                        placeholder="Nombre completo"
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <span>Color texto</span>
+                                    <input
+                                        type="color"
+                                        id="name-color"
+                                        value="#ffffff"
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <span>Tamaño fuente (%)</span>
+                                    <div class="size-row">
+                                        <input
+                                            type="range"
+                                            id="name-size"
+                                            min="1"
+                                            max="10"
+                                            value="5"
+                                            step="0.1"
+                                        />
+                                        <span
+                                            class="size-val"
+                                            id="name-size-val"
+                                            >5%</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Posición X (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="name-x"
+                                            min="-100"
+                                            max="200"
+                                            value="4"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="name-x-num"
+                                            value="4"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Posición Y (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="name-y"
+                                            min="-100"
+                                            max="200"
+                                            value="83"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="name-y-num"
+                                            value="83"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEXTO SUBTÍTULO -->
+                        <div class="panel collapsible" data-panel>
+                            <div class="panel-head">
+                                <div class="section-title">✏️ Subtítulo</div>
+                                <span class="chevron">▼</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="field-group">
+                                    <span>Texto</span>
+                                    <input
+                                        type="text"
+                                        id="txt-sub"
+                                        value="TEXTO DE EJEMPLO"
+                                        placeholder="Subtítulo"
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <span>Color texto</span>
+                                    <input
+                                        type="color"
+                                        id="sub-color"
+                                        value="#ffffff"
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <span>Tamaño fuente (%)</span>
+                                    <div class="size-row">
+                                        <input
+                                            type="range"
+                                            id="sub-size"
+                                            min="1"
+                                            max="8"
+                                            value="3.2"
+                                            step="0.1"
+                                        />
+                                        <span class="size-val" id="sub-size-val"
+                                            >3.2%</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Posición X (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="sub-x"
+                                            min="-100"
+                                            max="200"
+                                            value="4"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="sub-x-num"
+                                            value="4"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span>Posición Y (%)</span>
+                                    <div class="pos-row">
+                                        <input
+                                            type="range"
+                                            id="sub-y"
+                                            min="-100"
+                                            max="200"
+                                            value="89"
+                                            step="0.1"
+                                        />
+                                        <input
+                                            type="text"
+                                            inputmode="decimal"
+                                            id="sub-y-num"
+                                            value="89"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sidebar-footer">
+                        <button id="btn-export">
+                            ⬇ Exportar 1080 × 1440 px
+                        </button>
+                        <a
+                            id="btn-donate"
+                            href="https://ceneka.net/hallstorm"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >♥ Donación al proyecto</a
+                        >
+                    </div>
+                </aside>
+
+                <div id="sidebar-backdrop"></div>
+
+                <main id="canvas-area">
+                    <div id="touch-mode-bar">
+                        <span>✋ Arrastrá · Esquinas para escalar</span>
+                        <button id="touch-exit-btn" type="button">
+                            ✕ Salir
+                        </button>
+                    </div>
+                    <div id="canvas-wrapper">
+                        <canvas
+                            id="preview-canvas"
+                            width="1080"
+                            height="1440"
+                        ></canvas>
+                        <div id="touch-overlay">
+                            <div class="selection-box person" id="sel-person">
+                                <div
+                                    class="resize-handle tl"
+                                    data-element="person"
+                                ></div>
+                                <div
+                                    class="resize-handle tr"
+                                    data-element="person"
+                                ></div>
+                                <div
+                                    class="resize-handle bl"
+                                    data-element="person"
+                                ></div>
+                                <div
+                                    class="resize-handle br"
+                                    data-element="person"
+                                ></div>
+                            </div>
+                            <div class="selection-box name" id="sel-name">
+                                <div
+                                    class="resize-handle tl"
+                                    data-element="name"
+                                ></div>
+                                <div
+                                    class="resize-handle tr"
+                                    data-element="name"
+                                ></div>
+                                <div
+                                    class="resize-handle bl"
+                                    data-element="name"
+                                ></div>
+                                <div
+                                    class="resize-handle br"
+                                    data-element="name"
+                                ></div>
+                            </div>
+                            <div class="selection-box sub" id="sel-sub">
+                                <div
+                                    class="resize-handle tl"
+                                    data-element="sub"
+                                ></div>
+                                <div
+                                    class="resize-handle tr"
+                                    data-element="sub"
+                                ></div>
+                                <div
+                                    class="resize-handle bl"
+                                    data-element="sub"
+                                ></div>
+                                <div
+                                    class="resize-handle br"
+                                    data-element="sub"
+                                ></div>
+                            </div>
+                        </div>
+                        <div id="hint">
+                            Cargá la foto de la persona<br />para empezar a
+                            editar
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <nav id="mobile-toolbar" class="mobile-only">
+                <button
+                    type="button"
+                    class="toolbar-btn"
+                    id="tb-touch"
+                    aria-label="Modo mover"
+                >
+                    <span class="emoji">✋</span>
+                    Mover
+                </button>
+                <button
+                    type="button"
+                    class="toolbar-btn"
+                    id="tb-controls"
+                    aria-label="Controles"
+                >
+                    <span class="emoji">⚙️</span>
+                    Controles
+                </button>
+                <button
+                    type="button"
+                    class="toolbar-btn"
+                    id="tb-export"
+                    aria-label="Exportar"
+                >
+                    <span class="emoji">⬇️</span>
+                    Exportar
+                </button>
+            </nav>
+        </div>
+
+        <canvas id="export-canvas" width="1080" height="1440"></canvas>
+
+        <div id="loading-overlay">
+            <div class="spinner"></div>
+            <div id="loading-text">Procesando…</div>
+            <div id="loading-progress"></div>
+        </div>
+
+        <div id="error-banner" role="alert"></div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
