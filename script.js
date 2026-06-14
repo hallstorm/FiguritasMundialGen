@@ -652,6 +652,9 @@ function onPointerMove(e) {
   } else if (selectedElement === "sub") {
     state.subX = clamp(state.subX + dxPct, -100, 200);
     state.subY = clamp(state.subY + dyPct, -100, 200);
+  } else if (selectedElement === "extra") {
+    state.extraX = clamp(state.extraX + dxPct, -100, 200);
+    state.extraY = clamp(state.extraY + dyPct, -100, 200);
   }
 
   dragPointer.x = pt.clientX;
